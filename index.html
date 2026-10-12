@@ -1,1 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>MoviePulse | Upcoming Movies & Trailers</title>
+
+<meta name="description" content="Discover upcoming movies, movie news, release date updates and trailers on MoviePulse.">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #080a12;
+    --card: #121522;
+    --purple: #a855f7;
+    --pink: #ec4899;
+    --text: #f8fafc;
+    --muted: #a1a1b5;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 7%;
+    border-bottom: 1px solid #ffffff12;
+    background: #080a12eF;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(15px);
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.logo span {
+    color: var(--pink);
+}
+
+nav {
+    display: flex;
+    gap: 22px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+nav a:hover {
+    color: white;
+}
+
+.hero {
+    text-align: center;
+    padding: 90px 20px 65px;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse at 50% 0%, #7c3aed38, transparent 65%);
+}
+
+.badge {
+    display: inline-block;
+    padding: 8px 14px;
+    border: 1px solid #a855f750;
+    border-radius: 30px;
+    color: #d8b4fe;
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-bottom: 22px;
+    animation: glow 3s infinite alternate;
+}
+
+.hero h1 {
+    font-size: clamp(38px, 7vw, 76px);
+    font-weight: 900;
+    letter-spacing: -3px;
+    line-height: 1.08;
+    margin-bottom: 20px;
+}
+
+.gradient {
+    background: linear-gradient(90deg, #c084fc, #f472b6, #818cf8);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 540px;
+    margin: 0 auto 28px;
+    font-size: 15px;
+}
+
+.search-box {
+    max-width: 500px;
+    margin: auto;
+    display: flex;
+    background: #151827;
+    border: 1px solid #ffffff20;
+    border-radius: 14px;
+    padding: 6px;
+    transition: .3s;
+}
+
+.search-box:focus-within {
+    border-color: var(--purple);
+    box-shadow: 0 0 25px #a855f725;
+}
+
+.search-box input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    color: white;
+    border: none;
+    outline: none;
+    padding: 13px;
+    font-size: 14px;
+}
+
+.search-box button {
+    background: linear-gradient(135deg, #9333ea, #db2777);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.section {
+    padding: 35px 7% 70px;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    gap: 15px;
+}
+
+.section-heading h2 {
+    font-size: 27px;
+}
+
+.section-heading p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+
+.filter-btn {
+    background: #141725;
+    color: #c5c6d5;
+    border: 1px solid #ffffff14;
+    border-radius: 25px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: .25s;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+    background: #9333ea;
+    color: white;
+    border-color: #9333ea;
+}
+
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.movie-card {
+    background: var(--card);
+    border: 1px solid #ffffff0e;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform .3s, border-color .3s;
+    animation: appear .6s ease both;
+}
+
+.movie-card:hover {
+    transform: translateY(-7px);
+    border-color: #a855f765;
+}
+
+.poster {
+    height: 260px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.poster::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, #080a12, transparent 75%);
+    z-index: -1;
+}
+
+.poster::after {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: #ffffff12;
+    filter: blur(25px);
+    top: 30px;
+    right: -50px;
+    z-index: -1;
+}
+
+.poster-icon {
+    font-size: 80px;
+    filter: drop-shadow(0 0 25px #ffffff40);
+    transition: transform .4s;
+}
+
+.movie-card:hover .poster-icon {
+    transform: scale(1.15) rotate(-4deg);
+}
+
+.poster-label {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 10px;
+    font-weight: bold;
+    background: #0009;
+    padding: 7px 9px;
+    border-radius: 6px;
+    backdrop-filter: blur(8px);
+}
+
+.poster-title {
+    position: absolute;
+    bottom: 18px;
+    left: 14px;
+    right: 14px;
+    font-size: 21px;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-shadow: 0 2px 12px #000;
+}
+
+.movie-info {
+    padding: 17px;
+}
+
+.movie-info h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.movie-meta {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.movie-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 17px;
+}
+
+.movie-actions button {
+    flex: 1;
+    padding: 11px 5px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: bold;
+    transition: .2s;
+}
+
+.details-btn {
+    background: #25283a;
+    color: white;
+    border: 1px solid #ffffff10;
+}
+
+.trailer-btn {
+    background: linear-gradient(135deg, #9333ea, #db2777);
+    color: white;
+    border: none;
+}
+
+.movie-actions button:hover {
+    filter: brightness(1.2);
+    transform: scale(1.02);
+}
+
+.empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--muted);
+    padding: 50px 10px;
+}
+
+.info-section {
+    padding: 55px 7%;
+    background: linear-gradient(135deg, #151022, #0b0d18);
+    border-top: 1px
