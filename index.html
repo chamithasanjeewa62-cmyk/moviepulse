@@ -1,1253 +1,759 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080a12">
-
-<title>MoviePulse | Discover Movies</title>
-
-<style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-:root {
-  --bg: #080a12;
-  --card: #151827;
-  --pink: #ff3155;
-  --purple: #a855f7;
-  --text: #f8fafc;
-  --muted: #a1a1b5;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  position: relative;
-  isolation: isolate;
-  overflow-x: hidden;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, sans-serif;
-  min-height: 100vh;
-}
-
-button,
-input {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* ANIMATED BACKGROUND */
-
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  width: 350px;
-  height: 350px;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.35;
-  pointer-events: none;
-  z-index: -1;
-  animation: floatingGlow 12s ease-in-out infinite alternate;
-}
-
-body::before {
-  background: #a855f7;
-  top: 10%;
-  left: -180px;
-}
-
-body::after {
-  background: #ff3155;
-  bottom: 5%;
-  right: -180px;
-  animation-delay: -6s;
-}
-
-@keyframes floatingGlow {
-  0% {
-    transform: translate(0, 0) scale(.85);
-  }
-
-  50% {
-    transform: translate(90px, 50px) scale(1.2);
-  }
-
-  100% {
-    transform: translate(20px, -60px) scale(1);
-  }
-}
-
-/* HEADER */
-
-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  padding: 18px 5%;
-  background: rgba(8, 10, 18, .78);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid #ffffff18;
-}
-
-.logo {
-  font-size: 23px;
-  font-weight: 900;
-  transition: transform .3s ease;
-}
-
-.logo:hover {
-  transform: scale(1.05);
-}
-
-.logo span {
-  color: var(--pink);
-}
-
-nav {
-  display: flex;
-  gap: 15px;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-nav a {
-  transition: color .25s ease;
-}
-
-nav a:hover {
-  color: white;
-}
-
-/* HERO */
-
-.hero {
-  position: relative;
-  overflow: hidden;
-  text-align: center;
-  padding: 65px 18px 45px;
-  background: radial-gradient(
-    ellipse at top,
-    #7c3aed45,
-    transparent 70%
-  );
-  animation: heroAppear 1s ease both;
-}
-
-@keyframes heroAppear {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.badge {
-  display: inline-block;
-  padding: 9px 15px;
-  border: 1px solid #a855f755;
-  border-radius: 30px;
-  color: #d8b4fe;
-  font-size: 12px;
-  margin-bottom: 20px;
-  animation: badgeGlow 3s ease-in-out infinite;
-}
-
-@keyframes badgeGlow {
-  0%, 100% {
-    box-shadow: 0 0 5px #a855f722;
-  }
-
-  50% {
-    box-shadow: 0 0 22px #a855f766;
-  }
-}
-
-h1 {
-  font-size: clamp(35px, 7vw, 65px);
-  line-height: 1.15;
-  margin-bottom: 18px;
-}
-
-.gradient {
-  background: linear-gradient(
-    90deg,
-    #c084fc,
-    #f472b6,
-    #818cf8,
-    #c084fc
-  );
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: gradientMove 6s linear infinite;
-}
-
-@keyframes gradientMove {
-  to {
-    background-position: 300% center;
-  }
-}
-
-.hero p {
-  max-width: 550px;
-  margin: 0 auto 25px;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-/* SEARCH */
-
-.search {
-  display: flex;
-  max-width: 560px;
-  margin: auto;
-  gap: 10px;
-}
-
-.search input {
-  flex: 1;
-  min-width: 0;
-  padding: 15px;
-  border: 1px solid #ffffff20;
-  border-radius: 12px;
-  background: rgba(21, 24, 39, .9);
-  color: white;
-  outline: none;
-  transition: border-color .3s, box-shadow .3s;
-}
-
-.search input:focus {
-  border-color: var(--purple);
-  box-shadow: 0 0 18px #a855f733;
-}
-
-.search button,
-.primary {
-  position: relative;
-  overflow: hidden;
-  border: 0;
-  border-radius: 12px;
-  padding: 14px 20px;
-  background: var(--pink);
-  color: white;
-  font-weight: bold;
-  transition: transform .25s, box-shadow .25s;
-}
-
-.search button:hover,
-.primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 22px #ff315577;
-}
-
-.search button::after,
-.primary::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -120%;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    #ffffff55,
-    transparent
-  );
-  transform: skewX(-20deg);
-}
-
-.search button:hover::after,
-.primary:hover::after {
-  animation: buttonShine .7s ease;
-}
-
-@keyframes buttonShine {
-  to {
-    left: 150%;
-  }
-}
-
-/* MAIN */
-
-main {
-  padding: 25px 5% 60px;
-}
-
-.section-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 25px 0 18px;
-}
-
-.section-head h2 {
-  font-size: 22px;
-}
-
-/* CATEGORY BUTTONS */
-
-.pills {
-  display: flex;
-  gap: 9px;
-  overflow-x: auto;
-  padding: 5px 0 15px;
-  scrollbar-width: thin;
-  scrollbar-color: #a855f7 #151827;
-}
-
-.pill {
-  white-space: nowrap;
-  border: 1px solid #ffffff20;
-  background: var(--card);
-  color: var(--muted);
-  border-radius: 30px;
-  padding: 9px 15px;
-  transition:
-    background .3s,
-    color .3s,
-    transform .3s,
-    border-color .3s;
-}
-
-.pill:hover {
-  transform: translateY(-2px);
-  border-color: var(--purple);
-  color: white;
-}
-
-.pill.active {
-  background: var(--purple);
-  color: white;
-  border-color: var(--purple);
-}
-
-/* MOVIE GRID */
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.movie {
-  position: relative;
-  min-width: 0;
-  background: rgba(21, 24, 39, .92);
-  border: 1px solid #ffffff10;
-  border-radius: 14px;
-  overflow: hidden;
-  transition:
-    transform .35s ease,
-    border-color .35s ease,
-    box-shadow .35s ease;
-  animation: cardAppear .6s ease both;
-}
-
-@keyframes cardAppear {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.movie:hover {
-  transform: translateY(-8px) scale(1.02);
-  border-color: #a855f7;
-  box-shadow:
-    0 12px 35px #a855f733,
-    0 0 15px #ff315522;
-}
-
-.poster {
-  width: 100%;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
-  background: #202438;
-  display: block;
-  transition: transform .6s ease, filter .6s ease;
-}
-
-.movie:hover .poster {
-  transform: scale(1.06);
-  filter: brightness(1.12);
-}
-
-.info {
-  position: relative;
-  padding: 12px;
-  background: var(--card);
-}
-
-.title {
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 8px;
-  overflow-wrap: anywhere;
-}
-
-.meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 5px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.rating {
-  color: #facc15;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 12px;
-}
-
-.actions button {
-  flex: 1 1 65px;
-  padding: 9px 4px;
-  font-size: 11px;
-  border-radius: 8px;
-  border: 0;
-  background: #282d43;
-  color: white;
-  transition: transform .25s, background .25s;
-}
-
-.actions button:hover {
-  transform: translateY(-2px);
-  background: #424969;
-}
-
-.actions .watch {
-  background: var(--pink);
-}
-
-.actions .watch:hover {
-  background: #ff5270;
-  box-shadow: 0 0 15px #ff315544;
-}
-
-/* LOADING */
-
-.message {
-  text-align: center;
-  padding: 35px 10px;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-#loadMore {
-  display: block;
-  margin: 30px auto;
-}
-
-/* MODALS */
-
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, .82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  z-index: 20;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 15px;
-}
-
-.modal.show {
-  display: flex;
-}
-
-.modal-box {
-  background: #151827;
-  border: 1px solid #ffffff1c;
-  border-radius: 16px;
-  max-width: 750px;
-  width: 100%;
-  max-height: 90vh;
-  overflow: auto;
-  padding: 22px;
-  box-shadow: 0 0 45px #a855f722;
-  animation: modalAppear .3s ease both;
-}
-
-@keyframes modalAppear {
-  from {
-    opacity: 0;
-    transform: translateY(15px) scale(.97);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.close {
-  display: block;
-  margin-left: auto;
-  margin-bottom: 18px;
-  background: #33384b;
-  color: white;
-  border: 0;
-  padding: 9px 14px;
-  border-radius: 8px;
-  transition: background .25s;
-}
-
-.close:hover {
-  background: var(--pink);
-}
-
-.detail {
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 20px;
-}
-
-.detail img {
-  width: 100%;
-  border-radius: 10px;
-}
-
-.detail p {
-  color: var(--muted);
-  line-height: 1.7;
-  margin: 12px 0;
-}
-
-.player-title {
-  font-size: 20px;
-  margin-bottom: 15px;
-  line-height: 1.5;
-}
-
-.video-frame {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #000;
-  border: 0;
-  display: block;
-  border-radius: 10px;
-}
-
-.player-note {
-  color: var(--muted);
-  line-height: 1.7;
-  font-size: 13px;
-  margin-top: 12px;
-}
-
-.player-link {
-  color: #c084fc;
-  display: inline-block;
-  margin-top: 12px;
-}
-
-/* FOOTER */
-
-footer {
-  text-align: center;
-  padding: 30px 15px;
-  color: var(--muted);
-  border-top: 1px solid #ffffff15;
-  font-size: 12px;
-  line-height: 1.9;
-}
-
-footer a {
-  color: #c084fc;
-}
-
-footer a:hover {
-  color: #f0abfc;
-}
-
-/* RESPONSIVE */
-
-@media (max-width: 1000px) {
-  .grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px;
-  }
-}
-
-@media (max-width: 700px) {
-  header {
-    padding: 15px 4%;
-  }
-
-  .logo {
-    font-size: 19px;
-  }
-
-  nav {
-    gap: 10px;
-    font-size: 11px;
-  }
-
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 13px;
-  }
-
-  main {
-    padding: 20px 4% 45px;
-  }
-
-  .hero {
-    padding: 45px 15px 35px;
-  }
-
-  .search button {
-    padding: 12px;
-  }
-
-  .detail {
-    grid-template-columns: 100px 1fr;
-    gap: 12px;
-  }
-
-  .modal-box {
-    padding: 16px;
-  }
-
-  body::before,
-  body::after {
-    width: 220px;
-    height: 220px;
-    filter: blur(75px);
-  }
-
-  .movie:hover {
-    transform: translateY(-3px);
-  }
-}
-
-/* REDUCED MOTION ACCESSIBILITY */
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: .01ms !important;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080a12">
+
+  <meta name="google-site-verification" content="nmDbYRzZJCDLDcYsmSgyJgkifwWnObzFjKEPg6LtZ3g" />
+
+  <title>MoviePulse - Discover Movies</title>
+  <meta name="description" content="Discover popular movies, explore movie details, and watch trailers with MoviePulse.">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #080a12;
+      --card: #121523;
+      --purple: #9b5cff;
+      --pink: #ff4fa3;
+      --text: #ffffff;
+      --muted: #a6a9bd;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 18px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      background: #0d0f1bee;
+      border-bottom: 1px solid #25283a;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .search {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      max-width: 430px;
+    }
+
+    input, select {
+      background: #171a2a;
+      border: 1px solid #30334a;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      outline: none;
+      min-width: 0;
+    }
+
+    input {
+      flex: 1;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 11px 16px;
+      color: white;
+      font-weight: bold;
+      background: linear-gradient(100deg, var(--purple), var(--pink));
+    }
+
+    button:hover {
+      opacity: .85;
+    }
+
+    .hero {
+      padding: 65px 6%;
+      background:
+        radial-gradient(ellipse at 15% 20%, #792b9b55, transparent 45%),
+        radial-gradient(ellipse at 90% 60%, #e72e8040, transparent 40%);
+    }
+
+    .hero h1 {
+      font-size: clamp(35px, 6vw, 64px);
+      max-width: 750px;
+      line-height: 1.1;
+      margin-bottom: 18px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #b78aff, #ff65b1);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 550px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+
+    main {
+      padding: 15px 6% 50px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 28px 0 20px;
+    }
+
+    .section-head h2 {
+      font-size: 23px;
+    }
+
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 20px;
+    }
+
+    .movie-card {
+      background: var(--card);
+      border: 1px solid #22263a;
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .2s, border-color .2s;
+    }
+
+    .movie-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--purple);
+    }
+
+    .movie-card img {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      display: block;
+      background: #191b2a;
+    }
+
+    .movie-info {
+      padding: 12px;
+    }
+
+    .movie-info h3 {
+      font-size: 14px;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .movie-meta {
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 5px;
+    }
+
+    .rating {
+      color: #ffd166;
+    }
+
+    .status {
+      text-align: center;
+      padding: 35px 10px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .genre-select {
+      max-width: 220px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: #000d;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 30;
+      overflow-y: auto;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      width: 100%;
+      max-width: 850px;
+      background: #111422;
+      border: 1px solid #33364c;
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      margin: auto;
+    }
+
+    .close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 2;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      font-size: 22px;
+      background: #25283a;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 25px;
+      padding: 25px;
+    }
+
+    .details img {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    .details h2 {
+      margin: 12px 0;
+      font-size: 28px;
+    }
+
+    .details p {
+      color: #c1c3d1;
+      line-height: 1.7;
+      margin: 12px 0;
+    }
+
+    .trailer {
+      display: none;
+      padding: 0 20px 20px;
+    }
+
+    .trailer iframe {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 0;
+      border-radius: 12px;
+    }
+
+    footer {
+      border-top: 1px solid #25283a;
+      text-align: center;
+      color: var(--muted);
+      padding: 25px 15px;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 15px 4%;
+      }
+
+      .hero {
+        padding: 45px 5%;
+      }
+
+      main {
+        padding: 10px 4% 35px;
+      }
+
+      .movie-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .details {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+
+      .details img {
+        width: 145px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
-  <a href="#" class="logo">MOVIE<span>PULSE</span></a>
-
-  <nav>
-    <a href="#movies" onclick="setCategory('popular')">Popular</a>
-    <a href="#movies" onclick="setCategory('top_rated')">Top Rated</a>
-    <a href="#movies" onclick="setCategory('upcoming')">Upcoming</a>
-  </nav>
-</header>
-
-<section class="hero">
-  <div class="badge">🎬 YOUR NEXT MOVIE STARTS HERE</div>
-
-  <h1>
-    Discover Your Next<br>
-    <span class="gradient">Favorite Movie</span>
-  </h1>
-
-  <p>
-    Explore popular movies, discover hidden gems,
-    and find your next cinematic adventure.
-  </p>
+  <div class="logo">MoviePulse</div>
 
   <form class="search" id="searchForm">
     <input
-      id="searchInput"
       type="search"
+      id="searchInput"
       placeholder="Search movies..."
       aria-label="Search movies"
     >
     <button type="submit">Search</button>
   </form>
+</header>
+
+<section class="hero">
+  <h1>Discover Your Next <span class="gradient-text">Favorite Movie</span></h1>
+  <p>
+    Explore popular movies, discover new releases, check ratings,
+    and find trailers for your next movie night.
+  </p>
+  <button onclick="scrollToMovies()">Explore Movies ↓</button>
 </section>
 
-<main id="movies">
+<main id="moviesSection">
 
   <div class="section-head">
     <h2 id="sectionTitle">🔥 Popular Movies</h2>
+
+    <select
+      id="genreSelect"
+      class="genre-select"
+      aria-label="Filter by genre"
+    >
+      <option value="">All Genres</option>
+    </select>
   </div>
 
-  <div class="pills" id="genres">
-    <button class="pill active"
-      onclick="setCategory('popular',this)">Popular</button>
+  <div id="movieGrid" class="movie-grid"></div>
 
-    <button class="pill"
-      onclick="setCategory('now_playing',this)">Now Playing</button>
+  <div id="status" class="status">Loading movies...</div>
 
-    <button class="pill"
-      onclick="setCategory('top_rated',this)">Top Rated</button>
-
-    <button class="pill"
-      onclick="setCategory('upcoming',this)">Upcoming</button>
+  <div style="text-align:center; margin-top:30px;">
+    <button id="loadMore" style="display:none;">Load More</button>
   </div>
-
-  <div class="pills" id="genrePills"></div>
-
-  <div class="grid" id="movieGrid"></div>
-
-  <div class="message" id="message">
-    Loading movies...
-  </div>
-
-  <button
-    class="primary"
-    id="loadMore"
-    onclick="loadMore()"
-    hidden
-  >
-    Load More Movies
-  </button>
 
 </main>
 
-<!-- DETAILS MODAL -->
+<div class="modal" id="movieModal">
+  <div class="modal-content">
+    <button class="close" id="closeModal" aria-label="Close">×</button>
 
-<div class="modal" id="detailsModal"
-  onclick="if(event.target===this)closeDetails()">
+    <div id="movieDetails"></div>
 
-  <div class="modal-box">
-    <button class="close" onclick="closeDetails()">✕ Close</button>
-    <div id="detailsContent"></div>
+    <div class="trailer" id="trailerContainer"></div>
   </div>
-
-</div>
-
-<!-- VIDEO PLAYER MODAL -->
-
-<div class="modal" id="playerModal"
-  onclick="if(event.target===this)closePlayer()">
-
-  <div class="modal-box">
-
-    <button class="close" onclick="closePlayer()">
-      ✕ Close Player
-    </button>
-
-    <h2 class="player-title" id="playerTitle">
-      Movie Trailer
-    </h2>
-
-    <div id="playerContent">
-      Select a movie to load its trailer.
-    </div>
-
-    <p class="player-note">
-      This player displays available YouTube trailers.
-      Full movies require authorized video sources.
-    </p>
-
-  </div>
-
 </div>
 
 <footer>
-  <p>Discover movies with MoviePulse.</p>
-
-  <p>
-    This product uses the TMDB API but is not endorsed or certified by TMDB.
-  </p>
-
-  <p>
-    <a href="https://www.themoviedb.org/"
-       target="_blank"
-       rel="noopener noreferrer">
-      The Movie Database (TMDB)
-    </a>
-  </p>
+  <div><strong class="gradient-text">MoviePulse</strong></div>
+  Discover movies and explore trailers.
+  <br>
+  Movie information and images are provided by TMDB.
+  MoviePulse is not endorsed or certified by TMDB.
 </footer>
 
 <script>
-/*
-  IMPORTANT:
-  Replace the placeholder below with your NEW TMDB V3 API key.
-  Never post your API key publicly in chats.
-*/
-
-const API_KEY = "3e931d5679569246e96918302b26fdfc";
-
-const API_BASE = "https://api.themoviedb.org/3";
-const IMG_BASE = "https://image.tmdb.org/t/p/w500";
-
-let currentCategory = "popular";
-let currentPage = 1;
-let currentGenre = "";
-let currentQuery = "";
-let loading = false;
-
-const grid = document.getElementById("movieGrid");
-const message = document.getElementById("message");
-const loadButton = document.getElementById("loadMore");
-const titleEl = document.getElementById("sectionTitle");
-
-async function api(path, params = {}) {
-  const url = new URL(API_BASE + path);
-
-  url.searchParams.set("api_key", API_KEY);
-  url.searchParams.set("language", "en-US");
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== "" && value !== null && value !== undefined) {
-      url.searchParams.set(key, value);
-    }
-  });
-
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error("TMDB request failed: " + response.status);
-  }
-
-  return response.json();
-}
-
-function escapeHTML(value = "") {
-  return String(value).replace(/[&<>"']/g, ch => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[ch]);
-}
-
-function posterURL(path) {
-  return path ? IMG_BASE + path : "";
-}
-
-/* RENDER MOVIE CARDS */
-
-function renderMovies(movies, append = false) {
-  if (!append) {
-    grid.innerHTML = "";
-  }
-
-  if (!movies || movies.length === 0) {
-    if (!append) {
-      message.textContent = "No movies found. Try another search.";
-      message.hidden = false;
-    }
-    return;
-  }
-
-  const html = movies.map((movie, index) => {
-    const poster = posterURL(movie.poster_path);
-    const name = escapeHTML(movie.title || movie.name || "Untitled");
-    const year = (movie.release_date || "").slice(0, 4) || "N/A";
-    const rating = Number(movie.vote_average || 0).toFixed(1);
-    const id = Number(movie.id);
-
-    const image = poster
-      ? `<img class="poster"
-              src="${poster}"
-              alt="${name}"
-              loading="lazy">`
-      : `<div class="poster"></div>`;
-
-    return `
-      <article class="movie"
-        style="animation-delay:${Math.min(index * 45, 350)}ms">
-
-        ${image}
-
-        <div class="info">
-          <h3 class="title">${name}</h3>
-
-          <div class="meta">
-            <span>${year}</span>
-            <span class="rating">★ ${rating}</span>
-          </div>
-
-          <div class="actions">
-            <button onclick="showDetails(${id})">
-              Details
-            </button>
-
-            <button class="watch" onclick="playTrailer(${id})">
-              ▶ Watch
-            </button>
-          </div>
-        </div>
-
-      </article>
-    `;
-  }).join("");
-
-  grid.insertAdjacentHTML("beforeend", html);
-  message.hidden = true;
-}
-
-/* LOAD MOVIES */
-
-async function loadMovies(reset = true) {
-  if (loading) return;
-
-  if (reset) {
-    currentPage = 1;
-  }
-
-  loading = true;
-  message.hidden = false;
-  message.textContent = "Loading movies...";
-  loadButton.hidden = true;
-
-  if (
-    !API_KEY ||
-    API_KEY === "PASTE_YOUR_NEW_TMDB_API_KEY_HERE"
-  ) {
-    message.textContent =
-      "Please add your TMDB API key in the code.";
-    loading = false;
-    return;
-  }
-
-  if (reset) {
-    grid.innerHTML = "";
-  }
-
-  try {
-    let path = "/movie/" + currentCategory;
-    const params = { page: currentPage };
-
-    if (currentQuery) {
-      path = "/search/movie";
-      params.query = currentQuery;
-    } else if (currentGenre) {
-      path = "/discover/movie";
-      params.with_genres = currentGenre;
-      params.sort_by = "popularity.desc";
-    }
-
-    const data = await api(path, params);
-
-    renderMovies(data.results, !reset);
-
-    loadButton.hidden =
-      currentPage >= (data.total_pages || 1);
-
-    if (!data.results || !data.results.length) {
-      message.hidden = false;
-      message.textContent = "No movies found.";
-    }
-
-  } catch (error) {
-    console.error(error);
-
-    message.hidden = false;
-    message.textContent =
-      "Could not load movies. Check your API key and internet connection.";
-  } finally {
-    loading = false;
-  }
-}
-
-function loadMore() {
-  if (loading) return;
-
-  currentPage++;
-  loadMovies(false);
-}
-
-/* CATEGORIES */
-
-function setCategory(category, button) {
-  currentCategory = category;
-  currentGenre = "";
-  currentQuery = "";
-
-  document.getElementById("searchInput").value = "";
-
-  document.querySelectorAll("#genres .pill")
-    .forEach(p => p.classList.remove("active"));
-
-  document.querySelectorAll("#genrePills .pill")
-    .forEach(p => p.classList.remove("active"));
-
-  if (button) {
-    button.classList.add("active");
-  } else {
-    const matchingButton = [...document.querySelectorAll("#genres .pill")]
-      .find(p => p.getAttribute("onclick")?.includes("'" + category + "'"));
-
-    if (matchingButton) {
-      matchingButton.classList.add("active");
-    }
-  }
-
-  const labels = {
-    popular: "🔥 Popular Movies",
-    now_playing: "🎬 Now Playing",
-    top_rated: "⭐ Top Rated Movies",
-    upcoming: "🚀 Upcoming Movies"
-  };
-
-  titleEl.textContent = labels[category] || "🎬 Movies";
-
-  loadMovies(true);
-}
-
-/* SEARCH */
-
-document.getElementById("searchForm")
-  .addEventListener("submit", event => {
-    event.preventDefault();
-
-    currentQuery =
-      document.getElementById("searchInput").value.trim();
-
-    currentGenre = "";
-
-    document.querySelectorAll(".pill")
-      .forEach(p => p.classList.remove("active"));
-
-    titleEl.textContent = currentQuery
-      ? "🔎 Search Results"
-      : "🔥 Popular Movies";
-
-    loadMovies(true);
-  });
-
-/* LOAD GENRES */
-
-async function loadGenres() {
-  try {
-    const data = await api("/genre/movie/list");
-    const container = document.getElementById("genrePills");
-
-    data.genres.forEach(genre => {
-      const button = document.createElement("button");
-
-      button.className = "pill";
-      button.textContent = genre.name;
-
-      button.addEventListener("click", () => {
-        currentGenre = String(genre.id);
-        currentQuery = "";
-        currentPage = 1;
-
-        document.getElementById("searchInput").value = "";
-
-        document.querySelectorAll(".pill")
-          .forEach(p => p.classList.remove("active"));
-
-        button.classList.add("active");
-
-        titleEl.textContent = "🎭 " + genre.name + " Movies";
-
-        loadMovies(true);
-      });
-
-      container.appendChild(button);
+  // Replace this placeholder with your NEW TMDB API key.
+  const API_KEY = "PASTE_YOUR_NEW_TMDB_API_KEY_HERE";
+
+  const API_BASE = "https://api.themoviedb.org/3";
+  const IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
+
+  const movieGrid = document.getElementById("movieGrid");
+  const statusBox = document.getElementById("status");
+  const sectionTitle = document.getElementById("sectionTitle");
+  const genreSelect = document.getElementById("genreSelect");
+  const loadMoreButton = document.getElementById("loadMore");
+  const modal = document.getElementById("movieModal");
+
+  let currentPage = 1;
+  let currentQuery = "";
+  let currentGenre = "";
+  let currentCategory = "popular";
+  let isLoading = false;
+
+  const genres = [
+    { id: 28, name: "Action" },
+    { id: 12, name: "Adventure" },
+    { id: 16, name: "Animation" },
+    { id: 35, name: "Comedy" },
+    { id: 80, name: "Crime" },
+    { id: 99, name: "Documentary" },
+    { id: 18, name: "Drama" },
+    { id: 14, name: "Fantasy" },
+    { id: 27, name: "Horror" },
+    { id: 10749, name: "Romance" },
+    { id: 878, name: "Science Fiction" },
+    { id: 53, name: "Thriller" }
+  ];
+
+  function scrollToMovies() {
+    document.getElementById("moviesSection").scrollIntoView({
+      behavior: "smooth"
     });
-
-  } catch (error) {
-    console.error("Could not load genres:", error);
   }
-}
 
-/* MOVIE DETAILS */
-
-async function showDetails(id) {
-  const modal = document.getElementById("detailsModal");
-  const content = document.getElementById("detailsContent");
-
-  modal.classList.add("show");
-  content.innerHTML = "<p>Loading movie details...</p>";
-
-  try {
-    const movie = await api("/movie/" + id);
-    const poster = posterURL(movie.poster_path);
-
-    content.innerHTML = `
-      <div class="detail">
-
-        ${
-          poster
-            ? `<img src="${poster}"
-                    alt="${escapeHTML(movie.title)}">`
-            : ""
-        }
-
-        <div>
-          <h2>${escapeHTML(movie.title || "Movie")}</h2>
-
-          <p>
-            Release date:
-            ${escapeHTML(movie.release_date || "Unknown")}
-          </p>
-
-          <p>
-            Rating:
-            ★ ${Number(movie.vote_average || 0).toFixed(1)} / 10
-          </p>
-
-          <p>
-            ${escapeHTML(movie.overview || "No description available.")}
-          </p>
-
-          <button class="primary"
-            onclick="playTrailer(${Number(movie.id)})">
-            ▶ Watch Trailer
-          </button>
-        </div>
-
-      </div>
-    `;
-
-  } catch (error) {
-    content.innerHTML =
-      "<p>Could not load movie details. Please try again.</p>";
+  function checkApiKey() {
+    if (!API_KEY || API_KEY.includes("PASTE_YOUR_NEW")) {
+      statusBox.textContent =
+        "Add your TMDB API key in the code to load movies.";
+      return false;
+    }
+    return true;
   }
-}
 
-function closeDetails() {
-  document.getElementById("detailsModal").classList.remove("show");
-}
+  async function apiRequest(endpoint) {
+    const separator = endpoint.includes("?") ? "&" : "?";
+    const url = API_BASE + endpoint + separator +
+      "api_key=" + encodeURIComponent(API_KEY);
 
-/* IN-PAGE TRAILER PLAYER */
+    const response = await fetch(url);
 
-async function playTrailer(id) {
-  const modal = document.getElementById("playerModal");
-  const content = document.getElementById("playerContent");
-  const title = document.getElementById("playerTitle");
+    if (!response.ok) {
+      throw new Error("Movie service returned an error.");
+    }
 
-  modal.classList.add("show");
-  content.innerHTML = "<p>Finding an available trailer...</p>";
-  title.textContent = "Movie Trailer";
+    return response.json();
+  }
 
-  try {
-    const movie = await api("/movie/" + id);
+  function populateGenres() {
+    genres.forEach(function(genre) {
+      const option = document.createElement("option");
+      option.value = genre.id;
+      option.textContent = genre.name;
+      genreSelect.appendChild(option);
+    });
+  }
 
-    title.textContent =
-      (movie.title || "Movie") + " — Trailer";
+  function getImage(path) {
+    return path ? IMAGE_BASE + path : "";
+  }
 
-    const data = await api("/movie/" + id + "/videos");
+  function showStatus(message) {
+    statusBox.style.display = "block";
+    statusBox.textContent = message;
+  }
 
-    const video = data.results.find(v =>
-      v.site === "YouTube" &&
-      v.type === "Trailer" &&
-      v.key
-    ) || data.results.find(v =>
-      v.site === "YouTube" &&
-      v.type === "Teaser" &&
-      v.key
-    );
+  function renderMovies(movies, append = false) {
+    if (!append) {
+      movieGrid.innerHTML = "";
+    }
 
-    if (!video) {
-      content.innerHTML = `
-        <p>
-          No official trailer is available through TMDB for this movie.
-        </p>
-
-        <a
-          class="player-link"
-          href="https://www.youtube.com/results?search_query=${encodeURIComponent((movie.title || "movie") + " official trailer")}"
-          target="_blank"
-          rel="noopener noreferrer">
-
-          Search YouTube for the official trailer →
-        </a>
-      `;
+    if (!movies || movies.length === 0) {
+      if (!append) {
+        showStatus("No movies found. Try another search.");
+      }
       return;
     }
 
-    const iframe = document.createElement("iframe");
+    statusBox.style.display = "none";
 
-    iframe.className = "video-frame";
-    iframe.title = "Movie trailer";
+    movies.forEach(function(movie) {
+      const card = document.createElement("article");
+      card.className = "movie-card";
 
-    iframe.src =
-      "https://www.youtube-nocookie.com/embed/" +
-      encodeURIComponent(video.key);
+      const image = document.createElement("img");
+      image.loading = "lazy";
+      image.alt = movie.title || "Movie poster";
+      image.src = getImage(movie.poster_path);
 
-    iframe.allow =
-      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      image.onerror = function() {
+        image.style.display = "none";
+      };
 
-    iframe.allowFullscreen = true;
-    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+      const info = document.createElement("div");
+      info.className = "movie-info";
 
-    content.replaceChildren(iframe);
+      const title = document.createElement("h3");
+      title.textContent = movie.title || "Untitled Movie";
 
-  } catch (error) {
-    console.error(error);
+      const meta = document.createElement("div");
+      meta.className = "movie-meta";
 
-    content.innerHTML =
-      "<p>Could not load the trailer. Please try again.</p>";
+      const year = document.createElement("span");
+      year.textContent = movie.release_date
+        ? movie.release_date.slice(0, 4)
+        : "N/A";
+
+      const rating = document.createElement("span");
+      rating.className = "rating";
+      rating.textContent = "★ " +
+        (movie.vote_average ? movie.vote_average.toFixed(1) : "N/A");
+
+      meta.appendChild(year);
+      meta.appendChild(rating);
+
+      info.appendChild(title);
+      info.appendChild(meta);
+
+      if (movie.poster_path) {
+        card.appendChild(image);
+      }
+
+      card.appendChild(info);
+
+      card.addEventListener("click", function() {
+        openMovie(movie.id);
+      });
+
+      movieGrid.appendChild(card);
+    });
   }
-}
 
-function closePlayer() {
-  document.getElementById("playerModal").classList.remove("show");
+  async function loadMovies(reset = false) {
+    if (isLoading) return;
 
-  // Stop playback when the modal closes.
-  document.getElementById("playerContent").innerHTML = "";
-}
+    if (!checkApiKey()) return;
 
-/* ESCAPE KEY */
+    if (reset) {
+      currentPage = 1;
+      movieGrid.innerHTML = "";
+    }
 
-document.addEventListener("keydown", event => {
-  if (event.key === "Escape") {
-    closeDetails();
-    closePlayer();
+    isLoading = true;
+    loadMoreButton.style.display = "none";
+    showStatus("Loading movies...");
+
+    try {
+      let endpoint;
+
+      if (currentQuery) {
+        endpoint = "/search/movie?query=" +
+          encodeURIComponent(currentQuery) +
+          "&page=" + currentPage;
+      } else if (currentGenre) {
+        endpoint = "/discover/movie?with_genres=" +
+          encodeURIComponent(currentGenre) +
+          "&sort_by=popularity.desc&page=" + currentPage;
+      } else {
+        endpoint = "/" + currentCategory +
+          "/movie?page=" + currentPage;
+      }
+
+      const data = await apiRequest(endpoint);
+
+      renderMovies(data.results || [], !reset && currentPage > 1);
+
+      if (data.results && data.results.length > 0) {
+        loadMoreButton.style.display =
+          currentPage < data.total_pages ? "inline-block" : "none";
+      }
+    } catch (error) {
+      showStatus(
+        "Unable to load movies. Check your internet connection and TMDB API key."
+      );
+      console.error(error);
+    } finally {
+      isLoading = false;
+    }
   }
-});
 
-/* START */
+  async function openMovie(movieId) {
+    modal.classList.add("show");
 
-loadGenres();
-loadMovies(true);
+    const detailsBox = document.getElementById("movieDetails");
+    const trailerBox = document.getElementById("trailerContainer");
 
+    detailsBox.innerHTML =
+      '<div class="status">Loading movie details...</div>';
+
+    trailerBox.innerHTML = "";
+    trailerBox.style.display = "none";
+
+    try {
+      const movie = await apiRequest("/movie/" + movieId);
+
+      detailsBox.innerHTML = "";
+
+      const layout = document.createElement("div");
+      layout.className = "details";
+
+      const poster = document.createElement("img");
+      poster.alt = movie.title || "Movie poster";
+      poster.src = getImage(movie.poster_path);
+
+      const info = document.createElement("div");
+
+      const title = document.createElement("h2");
+      title.textContent = movie.title || "Movie Details";
+
+      const year = movie.release_date
+        ? movie.release_date.slice(0, 4)
+        : "Release date unknown";
+
+      const genresText = (movie.genres || [])
+        .map(function(genre) {
+          return genre.name;
+        })
+        .join(", ");
+
+      const meta = document.createElement("p");
+      meta.textContent =
+        year + " • ★ " +
+        (movie.vote_average ? movie.vote_average.toFixed(1) : "N/A") +
+        (genresText ? " • " + genresText : "");
+
+      const overview = document.createElement("p");
+      overview.textContent =
+        movie.overview || "No description available.";
+
+      const trailerButton = document.createElement("button");
+      trailerButton.textContent = "▶ Watch Trailer";
+      trailerButton.style.marginTop = "10px";
+      trailerButton.addEventListener("click", function() {
+        loadTrailer(movieId);
+      });
+
+      info.appendChild(title);
+      info.appendChild(meta);
+      info.appendChild(overview);
+      info.appendChild(trailerButton);
+
+      if (movie.poster_path) {
+        layout.appendChild(poster);
+      }
+
+      layout.appendChild(info);
+      detailsBox.appendChild(layout);
+    } catch (error) {
+      detailsBox.innerHTML =
+        '<div class="status">Could not load movie details.</div>';
+    }
+  }
+
+  async function loadTrailer(movieId) {
+    const trailerBox = document.getElementById("trailerContainer");
+
+    trailerBox.style.display = "block";
+    trailerBox.innerHTML =
+      '<div class="status">Searching for trailer...</div>';
+
+    try {
+      const data = await apiRequest("/movie/" + movieId + "/videos");
+
+      const videos = data.results || [];
+
+      const trailer = videos.find(function(video) {
+        return video.site === "YouTube" &&
+          video.type === "Trailer" &&
+          video.official;
+      }) || videos.find(function(video) {
+        return video.site === "YouTube" &&
+          video.type === "Trailer";
+      }) || videos.find(function(video) {
+        return video.site === "YouTube";
+      });
+
+      if (!trailer) {
+        trailerBox.innerHTML =
+          '<div class="status">No trailer is available for this movie.</div>';
+        return;
+      }
+
+      const iframe = document.createElement("iframe");
+      iframe.src = "https://www.youtube-nocookie.com/embed/" +
+        encodeURIComponent(trailer.key);
+
+      iframe.title = "Movie trailer";
+      iframe.allow =
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
+      trailerBox.innerHTML = "";
+      trailerBox.appendChild(iframe);
+    } catch (error) {
+      trailerBox.innerHTML =
+        '<div class="status">Unable to load the trailer.</div>';
+    }
+  }
+
+  document.getElementById("searchForm").addEventListener(
+    "submit",
+    function(event) {
+      event.preventDefault();
+
+      currentQuery = document.getElementById("searchInput")
+        .value.trim();
+
+      currentGenre = "";
+      genreSelect.value = "";
+
+      sectionTitle.textContent = currentQuery
+        ? "🔎 Search Results"
+        : "🔥 Popular Movies";
+
+      currentCategory = "popular";
+      loadMovies(true);
+      scrollToMovies();
+    }
+  );
+
+  genreSelect.addEventListener("change", function() {
+    currentGenre = genreSelect.value;
+    currentQuery = "";
+
+    document.getElementById("searchInput").value = "";
+
+    sectionTitle.textContent = currentGenre
+      ? "🎬 " + genreSelect.options[genreSelect.selectedIndex].text
+      : "🔥 Popular Movies";
+
+    currentCategory = "popular";
+    loadMovies(true);
+  });
+
+  loadMoreButton.addEventListener("click", function() {
+    if (!isLoading) {
+      currentPage++;
+      loadMovies(false);
+    }
+  });
+
+  document.getElementById("closeModal").addEventListener("click", function() {
+    modal.classList.remove("show");
+
+    document.getElementById("movieDetails").innerHTML = "";
+    document.getElementById("trailerContainer").innerHTML = "";
+  });
+
+  modal.addEventListener("click", function(event) {
+    if (event.target === modal) {
+      modal.classList.remove("show");
+
+      document.getElementById("movieDetails").innerHTML = "";
+      document.getElementById("trailerContainer").innerHTML = "";
+    }
+  });
+
+  populateGenres();
+  loadMovies(true);
 </script>
 
 </body>
-      </html>
+</html>
